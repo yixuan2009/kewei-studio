@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>3D 打印耗材管理 · FilaTrack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #fcf8f6;
+    --ink: #1a1020;
+    --ink-2: #3a2a40;
+    --muted: #80707d;
+    --muted-2: #b09aab;
+    --line: rgba(80, 30, 60, 0.08);
+    --card: #ffffff;
+    --brand: #ff5577;
+    --brand-2: #ff8a3d;
+    --accent-grad: linear-gradient(135deg, #ff8a3d 0%, #ff5577 60%, #c84cff 100%);
+    --soft-grad: radial-gradient(900px 500px at 85% -5%, rgba(255, 85, 119, 0.14), transparent 60%),
+                 radial-gradient(700px 400px at -5% 10%, rgba(255, 138, 61, 0.10), transparent 60%);
+    --shadow-sm: 0 1px 2px rgba(80, 30, 60, 0.04);
+    --shadow-md: 0 6px 24px -8px rgba(120, 40, 80, 0.14);
+    --shadow-lg: 0 24px 60px -20px rgba(140, 40, 80, 0.25);
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Inter", "Noto Sans SC", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  body { background-image: var(--soft-grad); background-attachment: fixed; min-height: 100vh; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+  a { color: inherit; text-decoration: none; }
+
+  /* Nav */
+  .nav {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    background: rgba(252, 248, 246, 0.74);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+  .brand-logo {
+    width: 32px; height: 32px; border-radius: 9px;
+    background: var(--accent-grad);
+    display: grid; place-items: center; color: white;
+    box-shadow: 0 6px 18px -6px rgba(255, 85, 119, 0.55);
+  }
+  .brand-name { font-size: 15px; }
+  .brand-name small { display: block; font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: 0.05em; }
+  .nav-links { display: flex; align-items: center; gap: 6px; }
+  .nav-links a {
+    padding: 8px 14px; border-radius: 8px;
+    font-size: 13.5px; color: var(--ink-2);
+    transition: background 0.15s;
+  }
+  .nav-links a:hover { background: rgba(80, 30, 60, 0.05); }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.6);
+    font-size: 12.5px; color: var(--ink-2);
+  }
+  .back-link:hover { background: white; }
+  .lang-toggle {
+    display: inline-flex; align-items: center;
+    padding: 4px; border: 1px solid var(--line);
+    border-radius: 999px; background: rgba(255, 255, 255, 0.6);
+    margin-left: 10px;
+  }
+  .lang-toggle button {
+    border: none; background: transparent;
+    padding: 4px 12px; font-size: 12px;
+    font-family: inherit; cursor: pointer;
+    border-radius: 999px; color: var(--muted);
+    transition: all 0.18s;
+  }
+  .lang-toggle button.active { background: var(--ink); color: white; }
+
+  /* Hero */
+  .hero { padding: 88px 0 64px; }
+  .hero-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 64px; align-items: center; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px; border-radius: 999px;
+    background: rgba(255, 85, 119, 0.10);
+    color: var(--brand);
+    font-size: 12px; font-weight: 500; letter-spacing: 0.04em;
+    margin-bottom: 24px;
+  }
+  .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 0 4px rgba(255, 85, 119, 0.18); }
+  h1.hero-title { font-size: 54px; line-height: 1.05; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 20px; }
+  h1.hero-title .grad {
+    background: var(--accent-grad);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero-sub-en { font-size: 17px; color: var(--muted); margin: 0 0 18px; }
+  .hero-desc { font-size: 16px; line-height: 1.7; color: var(--ink-2); max-width: 540px; margin: 0 0 32px; text-wrap: pretty; }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 20px; border-radius: 12px;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer; border: none; font-family: inherit;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-primary { background: var(--ink); color: white; box-shadow: var(--shadow-md); }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+  .btn-secondary { background: white; color: var(--ink); border: 1px solid var(--line); }
+  .btn-secondary:hover { background: rgba(80, 30, 60, 0.02); }
+
+  /* App preview */
+  .app-preview { position: relative; aspect-ratio: 1/1; width: 100%; max-width: 440px; justify-self: end; }
+  .app-card {
+    position: absolute; inset: 0;
+    background: white;
+    border-radius: 28px;
+    box-shadow: var(--shadow-lg);
+    padding: 32px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .app-card::before {
+    content: "";
+    position: absolute; top: -60%; right: -40%;
+    width: 90%; height: 90%;
+    background: var(--accent-grad);
+    border-radius: 50%;
+    filter: blur(60px); opacity: 0.20;
+    pointer-events: none;
+  }
+  .app-icon {
+    width: 64px; height: 64px; border-radius: 16px;
+    background: var(--accent-grad);
+    display: grid; place-items: center; color: white;
+    box-shadow: 0 12px 30px -8px rgba(255, 85, 119, 0.5);
+    margin-bottom: 18px;
+  }
+  .app-card h3 { margin: 0 0 4px; font-size: 18px; }
+  .app-card .ver { font-size: 12px; color: var(--muted); margin: 0 0 22px; }
+
+  /* Spool preview */
+  .spool-preview {
+    margin-top: auto;
+    background: #fff5f3;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px;
+    display: flex; align-items: center; gap: 18px;
+  }
+  .spool-svg {
+    flex-shrink: 0;
+  }
+  .spool-info { flex: 1; }
+  .spool-name { font-size: 13px; font-weight: 600; margin: 0 0 6px; }
+  .spool-meta { font-size: 11px; color: var(--muted); margin: 0 0 10px; font-family: "JetBrains Mono", monospace; letter-spacing: 0.02em; }
+  .spool-bar {
+    width: 100%; height: 6px;
+    background: rgba(80, 30, 60, 0.08);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .spool-bar > div {
+    height: 100%; width: 62%;
+    background: var(--accent-grad);
+    border-radius: 3px;
+  }
+  .spool-percent {
+    font-size: 11px; color: var(--muted); margin-top: 6px;
+    font-family: "JetBrains Mono", monospace;
+    display: flex; justify-content: space-between;
+  }
+  .spool-percent strong { color: var(--brand); }
+
+  /* Section base */
+  section { padding: 64px 0; }
+  .section-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 40px; gap: 24px; }
+  .section-head .title-block h2 { font-size: 32px; letter-spacing: -0.02em; margin: 0 0 6px; font-weight: 700; }
+  .section-head .title-block .en { font-size: 13px; color: var(--muted); font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; }
+  .section-head .meta { font-size: 13px; color: var(--muted); max-width: 360px; text-align: right; line-height: 1.6; }
+
+  /* Features */
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .feature {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .feature:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: rgba(255, 85, 119, 0.2); }
+  .feature .num { position: absolute; top: 20px; right: 24px; font-size: 11px; color: var(--muted-2); font-family: "JetBrains Mono", monospace; }
+  .feature .icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: rgba(255, 85, 119, 0.08);
+    color: var(--brand);
+    display: grid; place-items: center; margin-bottom: 20px;
+  }
+  .feature:nth-child(2) .icon { background: rgba(255, 138, 61, 0.10); color: #e0682b; }
+  .feature:nth-child(3) .icon { background: rgba(200, 76, 255, 0.08); color: #9333ea; }
+  .feature:nth-child(4) .icon { background: rgba(30, 200, 200, 0.10); color: #0ea5a5; }
+  .feature:nth-child(5) .icon { background: rgba(59, 91, 253, 0.08); color: #3b5bfd; }
+  .feature:nth-child(6) .icon { background: rgba(20, 184, 130, 0.10); color: #0f9b6a; }
+  .feature h4 { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+  .feature .en-label { font-size: 11px; color: var(--muted-2); margin-bottom: 10px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .feature p { margin: 0; font-size: 13.5px; line-height: 1.65; color: var(--muted); }
+
+  /* CTA */
+  .cta-card {
+    background: linear-gradient(150deg, #1a1020 0%, #4a1d3a 70%, #6a2a4d 100%);
+    color: white;
+    border-radius: var(--radius);
+    padding: 44px 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: center;
+    position: relative; overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+  .cta-card::before {
+    content: "";
+    position: absolute; top: -40%; right: -10%;
+    width: 60%; height: 100%;
+    background: radial-gradient(circle, rgba(255, 138, 61, 0.4), transparent 60%);
+    pointer-events: none;
+  }
+  .cta-card > * { position: relative; }
+  .cta-card h3 { margin: 0 0 8px; font-size: 22px; font-weight: 600; }
+  .cta-card p { margin: 0; font-size: 14px; line-height: 1.65; color: rgba(255,255,255,0.7); max-width: 480px; }
+  .cta-actions { display: flex; gap: 10px; flex-direction: column; }
+  .cta-actions a {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 18px; border-radius: 10px;
+    background: white; color: var(--ink);
+    font-size: 13.5px; font-weight: 500;
+    white-space: nowrap;
+    transition: transform 0.15s;
+  }
+  .cta-actions a:hover { transform: translateY(-1px); }
+  .cta-actions a.ghost { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.15); }
+
+  /* Footer */
+  footer { margin-top: 60px; padding: 36px 0 48px; border-top: 1px solid var(--line); }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; color: var(--muted); gap: 20px; flex-wrap: wrap; }
+  .footer-links { display: flex; gap: 22px; }
+  .footer-links a:hover { color: var(--ink); }
+
+  html[data-lang="en"] .cn { display: none; }
+  html[data-lang="zh"] .en-only { display: none; }
+
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    h1.hero-title { font-size: 40px; }
+    .cta-card { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) { .features-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
+      <div class="brand-logo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="8.5"/>
+          <circle cx="12" cy="12" r="3.5"/>
+        </svg>
+      </div>
+      <div class="brand-name">
+        <span class="cn">3D 打印耗材管理</span><span class="en-only">FilaTrack</span>
+        <small>by Kewei Studio</small>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a href="#features"><span class="cn">功能</span><span class="en-only">Features</span></a>
+      <a href="support.html"><span class="cn">技术支持</span><span class="en-only">Support</span></a>
+      <a class="back-link" href="index.html">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span class="cn">所有应用</span><span class="en-only">All Apps</span>
+      </a>
+      <div class="lang-toggle">
+        <button data-lang="zh" class="active">中</button>
+        <button data-lang="en">EN</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow">
+        <span class="dot"></span>
+        <span class="cn">3D 打印 · Maker 工具</span>
+        <span class="en-only">3D Printing · Maker Tool</span>
+      </div>
+      <h1 class="hero-title">
+        <span class="cn">每一卷线材，<br/><span class="grad">都该有迹可循。</span></span>
+        <span class="en-only">Every spool,<br/><span class="grad">accounted for.</span></span>
+      </h1>
+      <p class="hero-sub-en">
+        <span class="cn">FilaTrack — Filament inventory for 3D printing makers.</span>
+        <span class="en-only">3D 打印耗材管理 — 为 Maker 打造的线材仓库。</span>
+      </p>
+      <p class="hero-desc">
+        <span class="cn">3D 打印耗材管理是一款为 Maker 打造的线材仓库。逐卷记录品牌、颜色、剩余克重、推荐温度与打印参数，扫码即可登记，再也不会半夜断料。</span>
+        <span class="en-only">FilaTrack is a filament inventory built for makers. Track each spool's brand, color, remaining grams, recommended temps, and print settings. Scan-to-register — never run out mid-print again.</span>
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="support.html">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="m4 6 8 7 8-7"/></svg>
+          <span class="cn">技术支持</span><span class="en-only">Support</span>
+        </a>
+        <a class="btn btn-secondary" href="#features">
+          <span class="cn">查看功能</span><span class="en-only">View Features</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="app-preview">
+      <div class="app-card">
+        <div class="app-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="8.5"/>
+            <circle cx="12" cy="12" r="3.5"/>
+            <path d="M12 3.5v3M12 17.5v3M3.5 12h3M17.5 12h3"/>
+          </svg>
+        </div>
+        <h3><span class="cn">3D 打印耗材管理</span><span class="en-only">FilaTrack</span></h3>
+        <p class="ver">Version 1.0.3 · iOS 16+ / iPadOS 16+</p>
+        <div class="spool-preview">
+          <svg class="spool-svg" width="64" height="64" viewBox="0 0 64 64">
+            <defs>
+              <linearGradient id="spoolGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#ff8a3d"/>
+                <stop offset="0.6" stop-color="#ff5577"/>
+                <stop offset="1" stop-color="#c84cff"/>
+              </linearGradient>
+            </defs>
+            <circle cx="32" cy="32" r="26" fill="none" stroke="#3a2a40" stroke-width="1.5"/>
+            <circle cx="32" cy="32" r="22" fill="none" stroke="url(#spoolGrad)" stroke-width="9" stroke-dasharray="100 38" transform="rotate(-90 32 32)"/>
+            <circle cx="32" cy="32" r="9" fill="none" stroke="#3a2a40" stroke-width="1.5"/>
+            <circle cx="32" cy="32" r="2.5" fill="#3a2a40"/>
+          </svg>
+          <div class="spool-info">
+            <p class="spool-name"><span class="cn">PLA · 樱花粉</span><span class="en-only">PLA · Sakura Pink</span></p>
+            <p class="spool-meta">eSUN · 210°C · 1.75mm</p>
+            <div class="spool-bar"><div></div></div>
+            <div class="spool-percent">
+              <span><strong>620 g</strong> / 1000 g</span>
+              <span>62%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features">
+  <div class="container">
+    <div class="section-head">
+      <div class="title-block">
+        <div class="en">FEATURES · <span class="cn">功能</span><span class="en-only">功能</span></div>
+        <h2><span class="cn">六大核心功能</span><span class="en-only">Six core capabilities</span></h2>
+      </div>
+      <div class="meta">
+        <span class="cn">从入库登记到打印日志，覆盖耗材使用的完整生命周期。</span>
+        <span class="en-only">From check-in to print logs — the full filament lifecycle.</span>
+      </div>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature">
+        <span class="num">01</span>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>
+        </div>
+        <h4><span class="cn">线卷库存</span><span class="en-only">Spool Inventory</span></h4>
+        <div class="en-label">Spool Inventory</div>
+        <p><span class="cn">每一卷线材独立档案：品牌、材料、颜色、净重、入手价、购入时间一目了然。</span>
+        <span class="en-only">A unique record per spool — brand, material, color, net weight, purchase price &amp; date at a glance.</span></p>
+      </div>
+
+      <div class="feature">
+        <span class="num">02</span>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h7v7h-7z"/></svg>
+        </div>
+        <h4><span class="cn">扫码登记</span><span class="en-only">Scan to Register</span></h4>
+        <div class="en-label">Scan to Register</div>
+        <p><span class="cn">扫描线材包装上的条码或 NFC 标签，自动填入品牌、材料与参数，省去手动录入。</span>
+        <span class="en-only">Scan the packaging barcode or NFC tag — brand, material &amp; settings auto-fill, no manual typing.</span></p>
+      </div>
+
+      <div class="feature">
+        <span class="num">03</span>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7h6"/><path d="M9 12h6"/><path d="M9 17h3"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg>
+        </div>
+        <h4><span class="cn">打印参数</span><span class="en-only">Print Settings</span></h4>
+        <div class="en-label">Print Settings</div>
+        <p><span class="cn">为每种材料保存推荐喷嘴温度、热床温度、风扇与速度，下次打印一键复用。</span>
+        <span class="en-only">Save nozzle/bed temps, fan &amp; speed per material — reuse them on your next print in one tap.</span></p>
+      </div>
+
+      <div class="feature">
+        <span class="num">04</span>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>
+        </div>
+        <h4><span class="cn">重量追踪</span><span class="en-only">Weight Tracking</span></h4>
+        <div class="en-label">Weight Tracking</div>
+        <p><span class="cn">每次打印结束输入用量，自动扣减并预测剩余可打印克数与可完成模型数。</span>
+        <span class="en-only">Log usage after each print — auto-deducts remaining grams and estimates how many prints you have left.</span></p>
+      </div>
+
+      <div class="feature">
+        <span class="num">05</span>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        </div>
+        <h4><span class="cn">使用日志</span><span class="en-only">Print Log</span></h4>
+        <div class="en-label">Print Log</div>
+        <p><span class="cn">每次打印记录模型、用量、时长与成功/失败标记，复盘打印习惯一目了然。</span>
+        <span class="en-only">Each print logs the model, usage, duration, and success/fail flag — review your habits at a glance.</span></p>
+      </div>
+
+      <div class="feature">
+        <span class="num">06</span>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        </div>
+        <h4><span class="cn">低料提醒</span><span class="en-only">Low-Stock Alerts</span></h4>
+        <div class="en-label">Low-Stock Alerts</div>
+        <p><span class="cn">设定阈值，当某卷线材剩余克数过低时主动提醒，避免长打印任务半夜断料。</span>
+        <span class="en-only">Set a threshold — get notified when a spool runs low so you never run out mid-print again.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section>
+  <div class="container">
+    <div class="cta-card">
+      <div>
+        <h3><span class="cn">遇到打印或使用问题？</span><span class="en-only">Print or usage problems?</span></h3>
+        <p>
+          <span class="cn">把设备型号、材料品牌、问题截图发到客服邮箱，我们一起把它解决。</span>
+          <span class="en-only">Send your printer model, filament brand, and a screenshot to our support email — let's sort it out.</span>
+        </p>
+      </div>
+      <div class="cta-actions">
+        <a href="support.html">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+          <span class="cn">前往技术支持</span><span class="en-only">Go to Support</span>
+        </a>
+        <a class="ghost" href="mailto:springshaw666@gmail.com">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="m4 6 8 7 8-7"/></svg>
+          springshaw666@gmail.com
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container footer-inner">
+    <div>© 2026 <span class="cn">可为工作室</span><span class="en-only">Kewei Studio</span>. <span class="cn">保留所有权利。</span><span class="en-only">All rights reserved.</span></div>
+    <div class="footer-links">
+      <a href="index.html"><span class="cn">所有应用</span><span class="en-only">All Apps</span></a>
+      <a href="support.html"><span class="cn">技术支持</span><span class="en-only">Support</span></a>
+      <a href="privacy.html"><span class="cn">隐私政策</span><span class="en-only">Privacy</span></a>
+      <a href="terms.html"><span class="cn">使用条款</span><span class="en-only">Terms</span></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  let LANG = 'zh';
+  document.documentElement.setAttribute('data-lang', LANG);
+  document.querySelectorAll('.lang-toggle button').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      LANG = btn.dataset.lang;
+      document.documentElement.setAttribute('data-lang', LANG);
+      document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.toggle('active', b === btn));
+    });
+  });
+</script>
+</body>
+</html>

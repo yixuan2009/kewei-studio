@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>技术支持 · 苹智条形码 / Support · PinZhi Barcode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f7f8fc;
+    --ink: #0b1020;
+    --ink-2: #2a2f4a;
+    --muted: #6b7392;
+    --muted-2: #9aa1bd;
+    --line: rgba(20, 30, 80, 0.08);
+    --line-2: rgba(20, 30, 80, 0.04);
+    --card: #ffffff;
+    --brand: #3b5bfd;
+    --brand-2: #6a4cff;
+    --accent-grad: linear-gradient(135deg, #3b5bfd 0%, #6a4cff 55%, #b14cff 100%);
+    --soft-grad: radial-gradient(900px 500px at 85% -5%, rgba(106, 76, 255, 0.10), transparent 60%),
+                 radial-gradient(700px 400px at -5% 10%, rgba(30, 200, 200, 0.08), transparent 60%);
+    --shadow-sm: 0 1px 2px rgba(20, 30, 80, 0.04);
+    --shadow-md: 0 6px 24px -8px rgba(30, 40, 100, 0.12), 0 2px 6px rgba(20, 30, 80, 0.04);
+    --shadow-lg: 0 24px 60px -20px rgba(40, 50, 120, 0.25);
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Inter", "Noto Sans SC", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background-image: var(--soft-grad);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+  .container { max-width: 980px; margin: 0 auto; padding: 0 32px; }
+  a { color: inherit; text-decoration: none; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; }
+
+  /* Nav */
+  .nav {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    background: rgba(247, 248, 252, 0.72);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 12px;
+    font-weight: 600;
+  }
+  .brand-logo {
+    width: 32px; height: 32px; border-radius: 9px;
+    background: var(--accent-grad);
+    display: grid; place-items: center;
+    color: white;
+    box-shadow: 0 6px 18px -6px rgba(106, 76, 255, 0.55);
+  }
+  .brand-name { font-size: 15px; }
+  .brand-name small { display: block; font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: 0.05em; }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.6);
+    font-size: 12.5px; color: var(--ink-2);
+    transition: background 0.15s;
+  }
+  .back-link:hover { background: white; }
+  .lang-toggle {
+    display: inline-flex; align-items: center;
+    padding: 4px; border: 1px solid var(--line);
+    border-radius: 999px; background: rgba(255, 255, 255, 0.6);
+    margin-left: 10px;
+  }
+  .lang-toggle button {
+    border: none; background: transparent;
+    padding: 4px 12px; font-size: 12px;
+    font-family: inherit; cursor: pointer;
+    border-radius: 999px; color: var(--muted);
+    transition: all 0.18s;
+  }
+  .lang-toggle button.active { background: var(--ink); color: white; }
+
+  /* Header */
+  header.page-head {
+    padding: 80px 0 48px;
+    text-align: center;
+    position: relative;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; border-radius: 999px;
+    background: rgba(20, 184, 130, 0.10);
+    color: #0f9b6a;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.04em;
+    margin-bottom: 22px;
+  }
+  .eyebrow .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #0f9b6a;
+    box-shadow: 0 0 0 4px rgba(20, 184, 130, 0.2);
+  }
+  h1 {
+    font-size: 52px; line-height: 1.05; font-weight: 700;
+    letter-spacing: -0.02em; margin: 0 0 18px;
+  }
+  h1 .grad {
+    background: var(--accent-grad);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .page-head .sub {
+    font-size: 16px; color: var(--muted); max-width: 560px;
+    margin: 0 auto; line-height: 1.7; text-wrap: pretty;
+  }
+  .page-head .sub-en {
+    font-size: 14px; color: var(--muted-2); margin: 12px auto 0;
+    max-width: 560px; line-height: 1.6;
+  }
+
+  /* Quick contact strip */
+  .quick-strip {
+    margin: 48px 0 0;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    box-shadow: var(--shadow-md);
+  }
+  .quick-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 22px;
+    border-right: 1px solid var(--line);
+    transition: background 0.15s;
+    cursor: pointer; user-select: none;
+    border-radius: 12px;
+  }
+  .quick-item:last-child { border-right: none; }
+  .quick-item:hover { background: rgba(20, 30, 80, 0.025); }
+  .quick-item .ic {
+    width: 40px; height: 40px; border-radius: 11px;
+    background: rgba(59, 91, 253, 0.08);
+    color: var(--brand);
+    display: grid; place-items: center; flex-shrink: 0;
+  }
+  .quick-item:nth-child(2) .ic { background: rgba(106, 76, 255, 0.08); color: var(--brand-2); }
+  .quick-item:nth-child(3) .ic { background: rgba(20, 184, 130, 0.10); color: #0f9b6a; }
+  .quick-item .label {
+    font-size: 11px; color: var(--muted-2);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .quick-item .value {
+    font-size: 14.5px; font-weight: 500;
+    font-family: "JetBrains Mono", "Inter", monospace;
+  }
+  .quick-item .value.plain { font-family: "Inter", "Noto Sans SC", sans-serif; }
+
+  /* Sections */
+  section { padding: 64px 0 16px; }
+  section h2 {
+    font-size: 28px; letter-spacing: -0.02em; margin: 0 0 6px;
+    font-weight: 700;
+  }
+  section .section-en {
+    font-size: 12px; color: var(--muted-2); letter-spacing: 0.08em;
+    text-transform: uppercase; margin-bottom: 28px;
+    font-weight: 500;
+  }
+
+  /* FAQ */
+  .faq {
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  details.faq-item {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 0;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+  }
+  details.faq-item[open] {
+    border-color: rgba(59, 91, 253, 0.25);
+    box-shadow: var(--shadow-sm);
+  }
+  details.faq-item summary {
+    padding: 20px 24px;
+    cursor: pointer;
+    list-style: none;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 24px;
+    font-size: 15.5px; font-weight: 500;
+  }
+  details.faq-item summary::-webkit-details-marker { display: none; }
+  details.faq-item summary .q-num {
+    font-family: "JetBrains Mono", monospace;
+    color: var(--muted-2);
+    font-size: 12px;
+    margin-right: 14px;
+  }
+  details.faq-item summary .q-text { flex: 1; line-height: 1.5; }
+  details.faq-item summary .chev {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: rgba(20, 30, 80, 0.04);
+    display: grid; place-items: center;
+    color: var(--muted);
+    flex-shrink: 0;
+    transition: transform 0.2s, background 0.2s, color 0.2s;
+  }
+  details.faq-item[open] summary .chev {
+    transform: rotate(180deg);
+    background: rgba(59, 91, 253, 0.1);
+    color: var(--brand);
+  }
+  details.faq-item .answer {
+    padding: 0 24px 22px 60px;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--ink-2);
+  }
+  details.faq-item .answer p { margin: 0 0 8px; }
+  details.faq-item .answer p:last-child { margin-bottom: 0; }
+  details.faq-item .answer ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); }
+  details.faq-item .answer ul li { margin-bottom: 4px; }
+  details.faq-item .answer code {
+    background: rgba(59, 91, 253, 0.07);
+    color: var(--brand);
+    padding: 1px 6px; border-radius: 5px;
+    font-size: 12.5px;
+    font-family: "JetBrains Mono", monospace;
+  }
+
+  /* Help template card */
+  .help-template {
+    margin-top: 28px;
+    background: linear-gradient(150deg, #0b1020 0%, #1a1d3a 70%, #2a1e4d 100%);
+    color: white;
+    border-radius: var(--radius);
+    padding: 36px 40px;
+    position: relative; overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+  .help-template::before {
+    content: "";
+    position: absolute; top: -40%; right: -20%;
+    width: 60%; height: 100%;
+    background: radial-gradient(circle, rgba(106, 76, 255, 0.4), transparent 60%);
+    pointer-events: none;
+  }
+  .help-template > * { position: relative; z-index: 1; }
+  .help-template h3 {
+    margin: 0 0 6px; font-size: 20px; font-weight: 600;
+  }
+  .help-template .lead {
+    color: rgba(255,255,255,0.7); margin: 0 0 22px;
+    font-size: 13.5px; line-height: 1.65;
+    max-width: 480px;
+  }
+  .template-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px 24px;
+  }
+  .template-row {
+    display: flex; flex-direction: column; gap: 4px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .template-row .k {
+    font-size: 11px; letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+  }
+  .template-row .v {
+    font-size: 14px;
+    font-family: "JetBrains Mono", monospace;
+    color: rgba(255,255,255,0.9);
+  }
+  .copy-mail {
+    margin-top: 24px;
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 12px 20px;
+    background: white; color: var(--ink);
+    border: none; border-radius: 10px;
+    font-size: 14px; font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .copy-mail:hover { transform: translateY(-1px); box-shadow: 0 10px 30px -10px rgba(106, 76, 255, 0.5); }
+
+  /* Developer mini-card */
+  .dev-mini {
+    margin-top: 24px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    display: flex; align-items: center; gap: 24px;
+  }
+  .dev-mini .ic {
+    width: 56px; height: 56px; border-radius: 16px;
+    background: var(--accent-grad);
+    display: grid; place-items: center; color: white;
+    flex-shrink: 0;
+    box-shadow: 0 10px 26px -8px rgba(106, 76, 255, 0.45);
+  }
+  .dev-mini h4 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+  .dev-mini p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.55; }
+  .dev-mini .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 999px;
+    background: rgba(20, 184, 130, 0.10);
+    color: #0f9b6a;
+    font-size: 11.5px; font-weight: 500;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .dev-mini .pill .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #0f9b6a;
+    box-shadow: 0 0 0 3px rgba(20, 184, 130, 0.2);
+  }
+
+  /* Footer */
+  footer {
+    margin-top: 80px;
+    padding: 32px 0 48px;
+    border-top: 1px solid var(--line);
+  }
+  .footer-inner {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12.5px; color: var(--muted);
+    gap: 20px; flex-wrap: wrap;
+  }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a:hover { color: var(--ink); }
+
+  /* Lang toggle */
+  html[data-lang="en"] .cn { display: none; }
+  html[data-lang="zh"] .en-only { display: none; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 32px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: white;
+    padding: 12px 20px; border-radius: 10px;
+    font-size: 13px; opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+    box-shadow: var(--shadow-lg);
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ============== NAV ============== -->
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
+      <div class="brand-logo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <path d="M4 5v14M8 5v14M12 5v14M16 5v14M20 5v14"/>
+        </svg>
+      </div>
+      <div class="brand-name">
+        <span class="cn">可为工作室</span><span class="en-only">Kewei Studio</span>
+        <small>Support · 技术支持</small>
+      </div>
+    </a>
+    <div style="display:flex; align-items:center; gap:6px;">
+      <a class="back-link" href="index.html">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span class="cn">返回首页</span><span class="en-only">Back to Home</span>
+      </a>
+      <div class="lang-toggle">
+        <button data-lang="zh" class="active">中</button>
+        <button data-lang="en">EN</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============== HEADER ============== -->
+<header class="page-head">
+  <div class="container">
+    <div class="eyebrow">
+      <span class="dot"></span>
+      <span class="cn">技术支持中心 · 在线服务中</span>
+      <span class="en-only">Support Center · Online</span>
+    </div>
+    <h1>
+      <span class="cn">我们随时为你 <span class="grad">提供帮助</span></span>
+      <span class="en-only">Here to <span class="grad">help</span> — anytime</span>
+    </h1>
+    <p class="sub">
+      <span class="cn">如果你在使用苹智条形码时遇到任何问题、有功能建议、或希望反馈使用体验，请通过下方渠道联系我们。</span>
+      <span class="en-only">For any issues, feature suggestions, or feedback about PinZhi Barcode, please reach out via the channels below.</span>
+    </p>
+    <p class="sub-en">
+      <span class="cn">Average response time &lt; 24 hours · Often within 4 hours on business days.</span>
+      <span class="en-only">平均响应时间 &lt; 24 小时，工作日内通常 4 小时内回复。</span>
+    </p>
+
+    <!-- Quick contact strip -->
+    <div class="quick-strip">
+      <div class="quick-item" onclick="copyText('springshaw666@gmail.com')">
+        <div class="ic">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="m4 6 8 7 8-7"/></svg>
+        </div>
+        <div style="text-align:left;">
+          <div class="label"><span class="cn">客服邮箱</span><span class="en-only">Support Email</span></div>
+          <div class="value">springshaw666@gmail.com</div>
+        </div>
+      </div>
+      <div class="quick-item">
+        <div class="ic">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        </div>
+        <div style="text-align:left;">
+          <div class="label"><span class="cn">服务时间</span><span class="en-only">Service Hours</span></div>
+          <div class="value plain">Mon–Fri 09:00–18:00</div>
+        </div>
+      </div>
+      <div class="quick-item">
+        <div class="ic">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+        </div>
+        <div style="text-align:left;">
+          <div class="label"><span class="cn">响应时效</span><span class="en-only">Response Time</span></div>
+          <div class="value plain"><span class="cn">24 小时内</span><span class="en-only">Within 24h</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============== FAQ ============== -->
+<section>
+  <div class="container">
+    <h2><span class="cn">常见问题</span><span class="en-only">Frequently Asked Questions</span></h2>
+    <div class="section-en">FAQ · <span class="cn">常见问题</span><span class="en-only">常见问题</span></div>
+
+    <div class="faq">
+      <details class="faq-item" open>
+        <summary>
+          <span class="q-num">01</span>
+          <span class="q-text"><span class="cn">生成的条形码 / 二维码扫描不出来，怎么办？</span><span class="en-only">My generated barcode / QR code can't be scanned. What should I do?</span></span>
+          <span class="chev">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </summary>
+        <div class="answer">
+          <p><span class="cn">请先确认以下几点：</span><span class="en-only">Please check the following:</span></p>
+          <ul>
+            <li><span class="cn">条码类型是否与输入内容匹配（例如 EAN-13 需要 13 位纯数字）；</span><span class="en-only">The barcode type matches your input (e.g. EAN-13 requires 13 digits).</span></li>
+            <li><span class="cn">导出尺寸过小会导致扫描失败，建议导出时使用「高清」或更大尺寸；</span><span class="en-only">Small export sizes can fail to scan. Use "HD" or a larger size when exporting.</span></li>
+            <li><span class="cn">打印时请保留四周空白边距（静区），避免边缘被裁剪。</span><span class="en-only">When printing, keep the quiet zone (margins) intact — don't crop the edges.</span></li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          <span class="q-num">02</span>
+          <span class="q-text"><span class="cn">如何批量生成几十条条形码？</span><span class="en-only">How do I batch-generate dozens of barcodes?</span></span>
+          <span class="chev">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </summary>
+        <div class="answer">
+          <p><span class="cn">在首页点击「批量生成」，可以导入 <code>.xlsx</code> 或 <code>.csv</code> 文件，每行一条记录。系统会自动按行生成条形码并支持一键导出为 PDF 或 Excel。</span>
+            <span class="en-only">Tap "Batch" on the home screen and import an <code>.xlsx</code> or <code>.csv</code> — one record per row. The app generates a barcode per row and exports to PDF or Excel in one tap.</span></p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          <span class="q-num">03</span>
+          <span class="q-text"><span class="cn">历史记录会上传到服务器吗？是否安全？</span><span class="en-only">Is my history uploaded to a server? Is it safe?</span></span>
+          <span class="chev">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </summary>
+        <div class="answer">
+          <p><span class="cn">不会。所有生成与扫描记录默认仅保存在你的设备本地，App 不会上传任何条码内容、扫描结果或个人信息至服务器。详情可参考我们的隐私政策。</span>
+            <span class="en-only">No. All generation and scan history is stored locally on your device by default. The app does not upload any barcode content, scan results, or personal info to any server. See our Privacy Policy for details.</span></p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          <span class="q-num">04</span>
+          <span class="q-text"><span class="cn">导出 PDF 后字体或排版错乱怎么办？</span><span class="en-only">My PDF export has font or layout issues. What now?</span></span>
+          <span class="chev">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </summary>
+        <div class="answer">
+          <p><span class="cn">请尝试更新到最新版本，或在「设置 → 导出」中切换页面尺寸（A4 / Letter）并重试。若问题仍存在，请将问题文件与设备型号一并发送至客服邮箱。</span>
+            <span class="en-only">Try updating to the latest version, or switch the page size (A4 / Letter) under Settings → Export. If the issue persists, email the file with your device model to our support address.</span></p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          <span class="q-num">05</span>
+          <span class="q-text"><span class="cn">我想申请功能 / 建议新条码类型支持，怎么联系？</span><span class="en-only">How can I request a feature or new barcode type?</span></span>
+          <span class="chev">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </summary>
+        <div class="answer">
+          <p><span class="cn">非常欢迎！请发送邮件至 <code>springshaw666@gmail.com</code>，主题写明「功能建议」，简要描述使用场景与期望效果即可。每一封建议邮件我们都会认真阅读。</span>
+            <span class="en-only">Very welcome! Email <code>springshaw666@gmail.com</code> with the subject "Feature Request" and briefly describe your use case. We read every message.</span></p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          <span class="q-num">06</span>
+          <span class="q-text"><span class="cn">App 支持哪些设备和系统版本？</span><span class="en-only">Which devices and OS versions are supported?</span></span>
+          <span class="chev">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </summary>
+        <div class="answer">
+          <p><span class="cn">当前版本 v2.4.1 支持运行 iOS 16 及以上、iPadOS 16 及以上的所有 iPhone 与 iPad 设备。</span>
+            <span class="en-only">Version 2.4.1 supports all iPhone and iPad devices running iOS 16+ and iPadOS 16+.</span></p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============== HELP TEMPLATE ============== -->
+<section>
+  <div class="container">
+    <h2><span class="cn">联系我们</span><span class="en-only">Contact us</span></h2>
+    <div class="section-en">CONTACT · <span class="cn">联系</span><span class="en-only">联系</span></div>
+
+    <div class="help-template">
+      <h3><span class="cn">写信前，先准备好这些信息</span><span class="en-only">Before you write — please gather these</span></h3>
+      <p class="lead">
+        <span class="cn">为了让我们更快定位问题，请在邮件中附上以下信息。把这段当作模板复制即可。</span>
+        <span class="en-only">To help us resolve your issue faster, please include the following in your email. Feel free to copy this as a template.</span>
+      </p>
+
+      <div class="template-grid">
+        <div class="template-row">
+          <span class="k"><span class="cn">设备型号</span><span class="en-only">Device Model</span></span>
+          <span class="v">iPhone 15 Pro / iPad Air ...</span>
+        </div>
+        <div class="template-row">
+          <span class="k"><span class="cn">系统版本</span><span class="en-only">OS Version</span></span>
+          <span class="v">iOS 17.4</span>
+        </div>
+        <div class="template-row">
+          <span class="k"><span class="cn">App 版本</span><span class="en-only">App Version</span></span>
+          <span class="v">v2.4.1</span>
+        </div>
+        <div class="template-row">
+          <span class="k"><span class="cn">问题描述</span><span class="en-only">Issue Description</span></span>
+          <span class="v"><span class="cn">复现步骤 + 截图</span><span class="en-only">Steps to reproduce + screenshots</span></span>
+        </div>
+      </div>
+
+      <button class="copy-mail" onclick="copyText('springshaw666@gmail.com')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="m4 6 8 7 8-7"/></svg>
+        <span class="cn">复制客服邮箱</span><span class="en-only">Copy support email</span>
+      </button>
+    </div>
+
+    <!-- Developer mini -->
+    <div class="dev-mini">
+      <div class="ic">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21v-2a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div>
+        <h4><span class="cn">可为工作室</span><span class="en-only">Kewei Studio</span></h4>
+        <p>
+          <span class="cn">独立 Apple 开发者 · 联系邮箱 springshaw666@gmail.com</span>
+          <span class="en-only">Independent Apple Developer · Contact springshaw666@gmail.com</span>
+        </p>
+      </div>
+      <span class="pill">
+        <span class="dot"></span>
+        <span class="cn">认证开发者</span><span class="en-only">Verified</span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FOOTER ============== -->
+<footer>
+  <div class="container footer-inner">
+    <div>
+      © 2026 <span class="cn">可为工作室</span><span class="en-only">Kewei Studio</span>.
+      <span class="cn">保留所有权利。</span><span class="en-only">All rights reserved.</span>
+    </div>
+    <div class="footer-links">
+      <a href="privacy.html"><span class="cn">隐私政策</span><span class="en-only">Privacy</span></a>
+      <a href="terms.html"><span class="cn">使用条款</span><span class="en-only">Terms</span></a>
+      <a href="index.html"><span class="cn">返回首页</span><span class="en-only">Home</span></a>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let LANG = 'zh';
+  document.documentElement.setAttribute('data-lang', LANG);
+  document.querySelectorAll('.lang-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      LANG = btn.dataset.lang;
+      document.documentElement.setAttribute('data-lang', LANG);
+      document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.toggle('active', b === btn));
+    });
+  });
+
+  async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast(LANG === 'zh' ? '✓ 已复制：' + text : '✓ Copied: ' + text);
+    } catch {
+      showToast(text);
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(window.__toastTm);
+    window.__toastTm = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+</script>
+
+</body>
+</html>

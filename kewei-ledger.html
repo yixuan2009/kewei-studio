@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>可为智能记账 · Kewei Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f6f9fc;
+    --ink: #0b1020;
+    --ink-2: #2a2f4a;
+    --muted: #6b7392;
+    --muted-2: #9aa1bd;
+    --line: rgba(20, 30, 80, 0.08);
+    --card: #ffffff;
+    --brand: #1ec8c8;
+    --brand-2: #3b8efd;
+    --accent-grad: linear-gradient(135deg, #1ec8c8 0%, #3b8efd 60%, #4f6cff 100%);
+    --soft-grad: radial-gradient(900px 500px at 85% -5%, rgba(30, 200, 200, 0.16), transparent 60%),
+                 radial-gradient(700px 400px at -5% 10%, rgba(59, 142, 253, 0.10), transparent 60%);
+    --shadow-sm: 0 1px 2px rgba(20, 30, 80, 0.04);
+    --shadow-md: 0 6px 24px -8px rgba(30, 40, 100, 0.12);
+    --shadow-lg: 0 24px 60px -20px rgba(40, 50, 120, 0.25);
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Inter", "Noto Sans SC", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  body { background-image: var(--soft-grad); background-attachment: fixed; min-height: 100vh; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+  a { color: inherit; text-decoration: none; }
+
+  /* Nav */
+  .nav {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    background: rgba(246, 249, 252, 0.72);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+  .brand-logo {
+    width: 32px; height: 32px; border-radius: 9px;
+    background: var(--accent-grad);
+    display: grid; place-items: center; color: white;
+    box-shadow: 0 6px 18px -6px rgba(30, 142, 253, 0.55);
+  }
+  .brand-name { font-size: 15px; }
+  .brand-name small { display: block; font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: 0.05em; }
+  .nav-links { display: flex; align-items: center; gap: 6px; }
+  .nav-links a {
+    padding: 8px 14px; border-radius: 8px;
+    font-size: 13.5px; color: var(--ink-2);
+    transition: background 0.15s;
+  }
+  .nav-links a:hover { background: rgba(20, 30, 80, 0.05); }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.6);
+    font-size: 12.5px; color: var(--ink-2);
+  }
+  .back-link:hover { background: white; }
+  .lang-toggle {
+    display: inline-flex; align-items: center;
+    padding: 4px; border: 1px solid var(--line);
+    border-radius: 999px; background: rgba(255, 255, 255, 0.6);
+    margin-left: 10px;
+  }
+  .lang-toggle button {
+    border: none; background: transparent;
+    padding: 4px 12px; font-size: 12px;
+    font-family: inherit; cursor: pointer;
+    border-radius: 999px; color: var(--muted);
+    transition: all 0.18s;
+  }
+  .lang-toggle button.active { background: var(--ink); color: white; }
+
+  /* Hero */
+  .hero { padding: 88px 0 64px; }
+  .hero-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 64px; align-items: center; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px; border-radius: 999px;
+    background: rgba(30, 142, 253, 0.10);
+    color: var(--brand-2);
+    font-size: 12px; font-weight: 500; letter-spacing: 0.04em;
+    margin-bottom: 24px;
+  }
+  .eyebrow .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--brand-2);
+    box-shadow: 0 0 0 4px rgba(59, 142, 253, 0.18);
+  }
+  h1.hero-title {
+    font-size: 54px; line-height: 1.05;
+    font-weight: 700; letter-spacing: -0.02em;
+    margin: 0 0 20px;
+  }
+  h1.hero-title .grad {
+    background: var(--accent-grad);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero-sub-en { font-size: 17px; color: var(--muted); margin: 0 0 18px; }
+  .hero-desc {
+    font-size: 16px; line-height: 1.7; color: var(--ink-2);
+    max-width: 540px; margin: 0 0 32px; text-wrap: pretty;
+  }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 20px; border-radius: 12px;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer; border: none; font-family: inherit;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-primary { background: var(--ink); color: white; box-shadow: var(--shadow-md); }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+  .btn-secondary { background: white; color: var(--ink); border: 1px solid var(--line); }
+  .btn-secondary:hover { background: rgba(20, 30, 80, 0.02); }
+
+  /* App preview */
+  .app-preview { position: relative; aspect-ratio: 1/1; width: 100%; max-width: 440px; justify-self: end; }
+  .app-card {
+    position: absolute; inset: 0;
+    background: white;
+    border-radius: 28px;
+    box-shadow: var(--shadow-lg);
+    padding: 32px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .app-card::before {
+    content: "";
+    position: absolute; top: -60%; right: -40%;
+    width: 90%; height: 90%;
+    background: var(--accent-grad);
+    border-radius: 50%;
+    filter: blur(60px); opacity: 0.20;
+    pointer-events: none;
+  }
+  .app-icon {
+    width: 64px; height: 64px; border-radius: 16px;
+    background: var(--accent-grad);
+    display: grid; place-items: center; color: white;
+    box-shadow: 0 12px 30px -8px rgba(30, 142, 253, 0.5);
+    margin-bottom: 18px;
+  }
+  .app-card h3 { margin: 0 0 4px; font-size: 18px; }
+  .app-card .ver { font-size: 12px; color: var(--muted); margin: 0 0 22px; }
+  .balance-preview {
+    margin-top: auto;
+    background: #f4faff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px;
+    position: relative;
+  }
+  .balance-label { font-size: 11px; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px; }
+  .balance-amount {
+    font-size: 32px; font-weight: 600;
+    letter-spacing: -0.02em;
+    font-family: "Inter", monospace;
+  }
+  .balance-amount .currency { color: var(--muted); font-size: 18px; margin-right: 4px; }
+  .balance-amount .pos { color: #0f9b6a; }
+  .mini-chart {
+    margin-top: 14px;
+    display: flex; align-items: flex-end; gap: 6px;
+    height: 36px;
+  }
+  .mini-chart .bar {
+    flex: 1;
+    background: linear-gradient(180deg, #3b8efd, #1ec8c8);
+    border-radius: 3px;
+    opacity: 0.85;
+  }
+
+  /* Section base */
+  section { padding: 64px 0; }
+  .section-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 40px; gap: 24px; }
+  .section-head .title-block h2 { font-size: 32px; letter-spacing: -0.02em; margin: 0 0 6px; font-weight: 700; }
+  .section-head .title-block .en { font-size: 13px; color: var(--muted); font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; }
+  .section-head .meta { font-size: 13px; color: var(--muted); max-width: 360px; text-align: right; line-height: 1.6; }
+
+  /* Features */
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .feature {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .feature:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: rgba(30, 142, 253, 0.2); }
+  .feature .num { position: absolute; top: 20px; right: 24px; font-size: 11px; color: var(--muted-2); font-family: "JetBrains Mono", monospace; }
+  .feature .icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: rgba(30, 142, 253, 0.08);
+    color: var(--brand-2);
+    display: grid; place-items: center; margin-bottom: 20px;
+  }
+  .feature:nth-child(2) .icon { background: rgba(30, 200, 200, 0.10); color: #0ea5a5; }
+  .feature:nth-child(3) .icon { background: rgba(106, 76, 255, 0.08); color: #6a4cff; }
+  .feature:nth-child(4) .icon { background: rgba(20, 184, 130, 0.10); color: #0f9b6a; }
+  .feature:nth-child(5) .icon { background: rgba(255, 138, 61, 0.10); color: #e0682b; }
+  .feature:nth-child(6) .icon { background: rgba(59, 91, 253, 0.08); color: #3b5bfd; }
+  .feature h4 { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+  .feature .en-label { font-size: 11px; color: var(--muted-2); margin-bottom: 10px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .feature p { margin: 0; font-size: 13.5px; line-height: 1.65; color: var(--muted); }
+
+  /* Contact CTA */
+  .cta-card {
+    background: linear-gradient(150deg, #0b1020 0%, #1a3a5a 70%, #1e4a6a 100%);
+    color: white;
+    border-radius: var(--radius);
+    padding: 44px 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: center;
+    position: relative; overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+  .cta-card::before {
+    content: "";
+    position: absolute; top: -40%; right: -10%;
+    width: 60%; height: 100%;
+    background: radial-gradient(circle, rgba(30, 200, 200, 0.4), transparent 60%);
+    pointer-events: none;
+  }
+  .cta-card > * { position: relative; }
+  .cta-card h3 { margin: 0 0 8px; font-size: 22px; font-weight: 600; }
+  .cta-card p { margin: 0; font-size: 14px; line-height: 1.65; color: rgba(255,255,255,0.7); max-width: 480px; }
+  .cta-actions { display: flex; gap: 10px; flex-direction: column; }
+  .cta-actions a {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 18px; border-radius: 10px;
+    background: white; color: var(--ink);
+    font-size: 13.5px; font-weight: 500;
+    white-space: nowrap;
+    transition: transform 0.15s;
+  }
+  .cta-actions a:hover { transform: translateY(-1px); }
+  .cta-actions a.ghost { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.15); }
+
+  /* Footer */
+  footer { margin-top: 60px; padding: 36px 0 48px; border-top: 1px solid var(--line); }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; color: var(--muted); gap: 20px; flex-wrap: wrap; }
+  .footer-links { display: flex; gap: 22px; }
+  .footer-links a:hover { color: var(--ink); }
+
+  /* Lang */
+  html[data-lang="en"] .cn { display: none; }
+  html[data-lang="zh"] .en-only { display: none; }
+
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    h1.hero-title { font-size: 40px; }
+    .cta-card { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .features-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
+      <div class="brand-logo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 7H5a2 2 0 0 1 0-4h13v4z"/>
+          <path d="M5 7v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9H7"/>
+        </svg>
+      </div>
+      <div class="brand-name">
+        <span class="cn">可为智能记账</span><span class="en-only">Kewei Ledger</span>
+        <small>by Kewei Studio</small>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a href="#features"><span class="cn">功能</span><span class="en-only">Features</span></a>
+      <a href="support.html"><span class="cn">技术支持</span><span class="en-only">Support</span></a>
+      <a class="back-link" href="index.html">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span class="cn">所有应用</span><span class="en-only">All Apps</span>
+      </a>
+      <div class="lang-toggle">
+        <button data-lang="zh" class="active">中</button>
+        <button data-lang="en">EN</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow">
+        <span class="dot"></span>
+        <span class="cn">个人理财 · 已上架</span>
+        <span class="en-only">Personal Finance · Live</span>
+      </div>
+      <h1 class="hero-title">
+        <span class="cn">看清每一笔，<br/><span class="grad">守住每一分。</span></span>
+        <span class="en-only">Track every yuan.<br/><span class="grad">Save every cent.</span></span>
+      </h1>
+      <p class="hero-sub-en">
+        <span class="cn">Kewei Ledger — Personal finance, made effortless.</span>
+        <span class="en-only">可为智能记账 — 简单清晰的个人记账工具。</span>
+      </p>
+      <p class="hero-desc">
+        <span class="cn">可为智能记账是一款轻量、清爽的个人理财应用。支持多账户管理、智能分类、月度报告与预算提醒，让每一笔收支都看得清楚、记得轻松。</span>
+        <span class="en-only">Kewei Ledger is a clean, lightweight personal finance app. Multi-account management, smart categorization, monthly reports, and budget alerts — see exactly where your money goes.</span>
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="support.html">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="m4 6 8 7 8-7"/></svg>
+          <span class="cn">技术支持</span><span class="en-only">Support</span>
+        </a>
+        <a class="btn btn-secondary" href="#features">
+          <span class="cn">查看功能</span><span class="en-only">View Features</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="app-preview">
+      <div class="app-card">
+        <div class="app-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 7H5a2 2 0 0 1 0-4h13v4z"/>
+            <path d="M5 7v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9H7"/>
+            <circle cx="16" cy="14" r="1.2" fill="currentColor"/>
+          </svg>
+        </div>
+        <h3><span class="cn">可为智能记账</span><span class="en-only">Kewei Ledger</span></h3>
+        <p class="ver">Version 1.2.0 · iOS 16+</p>
+        <div class="balance-preview">
+          <div class="balance-label"><span class="cn">本月结余</span><span class="en-only">Net This Month</span></div>
+          <div class="balance-amount">
+            <span class="pos"><span class="currency">¥</span>3,248.<small>56</small></span>
+          </div>
+          <div class="mini-chart">
+            <div class="bar" style="height: 35%"></div>
+            <div class="bar" style="height: 60%"></div>
+            <div class="bar" style="height: 45%"></div>
+            <div class="bar" style="height: 80%"></div>
+            <div class="bar" style="height: 55%"></div>
+            <div class="bar" style="height: 90%"></div>
+            <div class="bar" style="height: 70%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features">
+  <div class="container">
+    <div class="section-head">
+      <div class="title-block">
+        <div class="en">FEATURES · <span class="cn">功能</span><span class="en-only">功能</span></div>
+        <h2><span class="cn">六大核心功能</span><span class="en-only">Six core capabilities</span></h2>
+      </div>
+      <div class="meta">
+        <span class="cn">从一笔记账到月度复盘，覆盖个人理财的完整链路。</span>
+        <span class="en-only">From one quick entry to a monthly review — covers your full personal finance flow.</span>
+      </div>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature">
+        <span class="num">01</span>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>
+        </div>
+        <h4><span class="cn">多账户管理</span><span class="en-only">Multi-Account</span></h4>
+        <div class="en-label">Multi-Account</div>
+        <p><span class="cn">现金、银行卡、支付宝、微信、信用卡分账户管理，余额一目了然。</span>
+        <span class="en-only">Cash, bank, Alipay, WeChat Pay, credit cards — manage all balances at a glance.</span></p>
+      </div>
+
+      <div class="feature">
+        <span class="num">02</span>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </div>
+        <h4><span class="cn">智能分类</span><span class="en-only">Smart Categorization</span></h4>
+        <div class="en-label">Smart Categorization</div>
+        <p><span class="cn">根据商家与金额自动推荐分类，越用越准，新建分类支持自定义图标与颜色。</span>
+        <span class="en-only">Auto-suggests categories from merchant &amp; amount — improves over time. Custom icons &amp; colors supported.</span></p>
+      </div>
+
+      <div class="feature">
+        <span class="num">03</span>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 4-4 4 4 5-5"/></svg>
+        </div>
+        <h4><span class="cn">月度报告</span><span class="en-only">Monthly Report</span></h4>
+        <div class="en-label">Monthly Report</div>
+        <p><span class="cn">收支趋势、分类占比、同环比变化，清晰的图表帮你看懂消费习惯。</span>
+        <span class="en-only">Income/expense trends, category breakdowns, MoM/YoY changes — clear charts on your spending habits.</span></p>
+      </div>
+
+      <div class="feature">
+        <span class="num">04</span>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h4><span class="cn">预算提醒</span><span class="en-only">Budget Alerts</span></h4>
+        <div class="en-label">Budget Alerts</div>
+        <p><span class="cn">为不同分类设定预算上限，达到 80% 时温和提醒，避免不知不觉超支。</span>
+        <span class="en-only">Set budget caps per category — get a friendly nudge at 80% to prevent overspending.</span></p>
+      </div>
+
+      <div class="feature">
+        <span class="num">05</span>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
+        </div>
+        <h4><span class="cn">数据导出</span><span class="en-only">Data Export</span></h4>
+        <div class="en-label">Data Export</div>
+        <p><span class="cn">支持 Excel、CSV、PDF 多格式导出，按月/年/自定义日期范围打包。</span>
+        <span class="en-only">Export to Excel, CSV, or PDF — packaged by month, year, or any custom range.</span></p>
+      </div>
+
+      <div class="feature">
+        <span class="num">06</span>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h4><span class="cn">本地存储</span><span class="en-only">Local-First</span></h4>
+        <div class="en-label">Local-First</div>
+        <p><span class="cn">所有数据默认仅保存在你的设备上，可选 iCloud 同步，账本永远归你所有。</span>
+        <span class="en-only">All data stays on your device by default. Optional iCloud sync — your ledger, always yours.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section>
+  <div class="container">
+    <div class="cta-card">
+      <div>
+        <h3><span class="cn">使用中遇到问题？</span><span class="en-only">Need help?</span></h3>
+        <p>
+          <span class="cn">通过下方任一方式联系我们，工作日内通常 4 小时内回复，最长不超过 24 小时。</span>
+          <span class="en-only">Reach us through any channel below — we typically respond within 4 hours on business days, 24 hours at most.</span>
+        </p>
+      </div>
+      <div class="cta-actions">
+        <a href="support.html">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+          <span class="cn">前往技术支持</span><span class="en-only">Go to Support</span>
+        </a>
+        <a class="ghost" href="mailto:springshaw666@gmail.com">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="m4 6 8 7 8-7"/></svg>
+          springshaw666@gmail.com
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container footer-inner">
+    <div>© 2026 <span class="cn">可为工作室</span><span class="en-only">Kewei Studio</span>. <span class="cn">保留所有权利。</span><span class="en-only">All rights reserved.</span></div>
+    <div class="footer-links">
+      <a href="index.html"><span class="cn">所有应用</span><span class="en-only">All Apps</span></a>
+      <a href="support.html"><span class="cn">技术支持</span><span class="en-only">Support</span></a>
+      <a href="privacy.html"><span class="cn">隐私政策</span><span class="en-only">Privacy</span></a>
+      <a href="terms.html"><span class="cn">使用条款</span><span class="en-only">Terms</span></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  let LANG = 'zh';
+  document.documentElement.setAttribute('data-lang', LANG);
+  document.querySelectorAll('.lang-toggle button').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      LANG = btn.dataset.lang;
+      document.documentElement.setAttribute('data-lang', LANG);
+      document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.toggle('active', b === btn));
+    });
+  });
+</script>
+</body>
+</html>

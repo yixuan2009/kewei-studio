@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>苹智条形码 · 技术支持 / PinZhi Barcode · Support</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f7f8fc;
+    --bg-soft: #eef1fb;
+    --ink: #0b1020;
+    --ink-2: #2a2f4a;
+    --muted: #6b7392;
+    --muted-2: #9aa1bd;
+    --line: rgba(20, 30, 80, 0.08);
+    --line-2: rgba(20, 30, 80, 0.04);
+    --card: #ffffff;
+    --brand: #3b5bfd;
+    --brand-2: #6a4cff;
+    --brand-3: #1ec8c8;
+    --accent-grad: linear-gradient(135deg, #3b5bfd 0%, #6a4cff 55%, #b14cff 100%);
+    --soft-grad: radial-gradient(1200px 600px at 80% -10%, rgba(106, 76, 255, 0.12), transparent 60%),
+                 radial-gradient(900px 500px at -10% 10%, rgba(30, 200, 200, 0.10), transparent 60%),
+                 radial-gradient(700px 500px at 50% 100%, rgba(59, 91, 253, 0.08), transparent 60%);
+    --shadow-sm: 0 1px 2px rgba(20, 30, 80, 0.04), 0 1px 1px rgba(20, 30, 80, 0.03);
+    --shadow-md: 0 6px 24px -8px rgba(30, 40, 100, 0.12), 0 2px 6px rgba(20, 30, 80, 0.04);
+    --shadow-lg: 0 24px 60px -20px rgba(40, 50, 120, 0.25), 0 8px 20px rgba(20, 30, 80, 0.06);
+    --radius: 18px;
+    --radius-sm: 12px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Inter", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background: var(--bg);
+    background-image: var(--soft-grad);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+  a { color: inherit; text-decoration: none; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; }
+
+  /* ---------- Nav ---------- */
+  .nav {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    background: rgba(247, 248, 252, 0.72);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 12px;
+    font-weight: 600;
+  }
+  .brand-logo {
+    width: 32px; height: 32px; border-radius: 9px;
+    background: var(--accent-grad);
+    display: grid; place-items: center;
+    color: white;
+    box-shadow: 0 6px 18px -6px rgba(106, 76, 255, 0.55);
+  }
+  .brand-name { font-size: 15px; letter-spacing: 0.01em; }
+  .brand-name small { display: block; font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: 0.05em; }
+  .nav-links { display: flex; align-items: center; gap: 6px; }
+  .nav-links a {
+    padding: 8px 14px; border-radius: 8px;
+    font-size: 13.5px; color: var(--ink-2);
+    transition: background 0.15s;
+  }
+  .nav-links a:hover { background: rgba(20, 30, 80, 0.05); }
+  .lang-toggle {
+    display: inline-flex; align-items: center;
+    padding: 4px; border: 1px solid var(--line);
+    border-radius: 999px; background: rgba(255, 255, 255, 0.6);
+    margin-left: 12px;
+  }
+  .lang-toggle button {
+    border: none; background: transparent;
+    padding: 4px 12px; font-size: 12px;
+    font-family: inherit; cursor: pointer;
+    border-radius: 999px; color: var(--muted);
+    transition: all 0.18s;
+  }
+  .lang-toggle button.active {
+    background: var(--ink); color: white;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 88px 0 64px;
+    position: relative;
+  }
+  .hero-grid {
+    display: grid; grid-template-columns: 1.15fr 1fr;
+    gap: 64px; align-items: center;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px; border-radius: 999px;
+    background: rgba(59, 91, 253, 0.08);
+    color: var(--brand);
+    font-size: 12px; font-weight: 500; letter-spacing: 0.04em;
+    margin-bottom: 24px;
+  }
+  .eyebrow .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--brand);
+    box-shadow: 0 0 0 4px rgba(59, 91, 253, 0.15);
+  }
+  h1.hero-title {
+    font-size: 56px; line-height: 1.05;
+    font-weight: 700; letter-spacing: -0.02em;
+    margin: 0 0 20px;
+  }
+  h1.hero-title .grad {
+    background: var(--accent-grad);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero-sub-en {
+    font-size: 17px; color: var(--muted);
+    letter-spacing: 0.01em; margin: 0 0 18px;
+    font-weight: 400;
+  }
+  .hero-desc {
+    font-size: 16px; line-height: 1.7;
+    color: var(--ink-2); max-width: 540px;
+    margin: 0 0 32px;
+    text-wrap: pretty;
+  }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 20px; border-radius: 12px;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer; border: none;
+    font-family: inherit;
+    transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+  }
+  .btn-primary {
+    background: var(--ink); color: white;
+    box-shadow: var(--shadow-md);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+  .btn-secondary {
+    background: white; color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .btn-secondary:hover { background: rgba(20, 30, 80, 0.02); }
+
+  /* App preview card */
+  .app-preview {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    max-width: 440px;
+    justify-self: end;
+  }
+  .app-card {
+    position: absolute; inset: 0;
+    background: white;
+    border-radius: 28px;
+    box-shadow: var(--shadow-lg);
+    padding: 32px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .app-card::before {
+    content: "";
+    position: absolute; top: -60%; right: -40%;
+    width: 90%; height: 90%;
+    background: var(--accent-grad);
+    border-radius: 50%;
+    filter: blur(60px); opacity: 0.18;
+    pointer-events: none;
+  }
+  .app-icon {
+    width: 64px; height: 64px;
+    border-radius: 16px;
+    background: var(--accent-grad);
+    display: grid; place-items: center;
+    color: white;
+    box-shadow: 0 12px 30px -8px rgba(106, 76, 255, 0.5);
+    margin-bottom: 18px;
+  }
+  .app-card h3 { margin: 0 0 4px; font-size: 18px; }
+  .app-card .ver { font-size: 12px; color: var(--muted); margin: 0 0 22px; }
+  .barcode-preview {
+    margin-top: auto;
+    background: #fafbff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .barcode-bars {
+    height: 60px;
+    background-image: repeating-linear-gradient(90deg,
+      #0b1020 0 2px, transparent 2px 4px,
+      #0b1020 4px 7px, transparent 7px 9px,
+      #0b1020 9px 11px, transparent 11px 16px,
+      #0b1020 16px 19px, transparent 19px 21px,
+      #0b1020 21px 24px, transparent 24px 30px
+    );
+  }
+  .barcode-num {
+    font-size: 13px; letter-spacing: 0.18em;
+    color: var(--ink-2); text-align: center;
+  }
+  .floating-chip {
+    position: absolute;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 10px 14px;
+    box-shadow: var(--shadow-md);
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 500;
+  }
+  .floating-chip .chip-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    display: grid; place-items: center;
+    color: white;
+  }
+  .chip-1 { top: 28px; left: -30px; animation: float1 6s ease-in-out infinite; }
+  .chip-1 .chip-icon { background: linear-gradient(135deg, #1ec8c8, #3b5bfd); }
+  .chip-2 { bottom: 80px; left: -50px; animation: float2 7s ease-in-out infinite; }
+  .chip-2 .chip-icon { background: linear-gradient(135deg, #6a4cff, #b14cff); }
+  .chip-3 { top: 110px; right: -20px; animation: float3 8s ease-in-out infinite; }
+  .chip-3 .chip-icon { background: linear-gradient(135deg, #ff8a3d, #ff4d76); }
+  @keyframes float1 { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  @keyframes float2 { 0%,100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+  @keyframes float3 { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+  /* ---------- Section base ---------- */
+  section { scroll-margin-top: 80px; }
+  .section-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 40px; gap: 24px;
+  }
+  .section-head .title-block h2 {
+    font-size: 36px; letter-spacing: -0.02em;
+    margin: 0 0 6px; font-weight: 700;
+  }
+  .section-head .title-block .en {
+    font-size: 14px; color: var(--muted); font-weight: 500;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .section-head .meta {
+    font-size: 13px; color: var(--muted);
+    max-width: 360px; text-align: right;
+    line-height: 1.6;
+  }
+  .section { padding: 64px 0; }
+
+  /* ---------- Features ---------- */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .feature {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .feature:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(59, 91, 253, 0.2);
+  }
+  .feature .num {
+    position: absolute; top: 20px; right: 24px;
+    font-size: 11px; color: var(--muted-2);
+    font-family: "JetBrains Mono", monospace;
+    letter-spacing: 0.05em;
+  }
+  .feature .icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: rgba(59, 91, 253, 0.08);
+    color: var(--brand);
+    display: grid; place-items: center;
+    margin-bottom: 20px;
+  }
+  .feature:nth-child(2) .icon { background: rgba(106, 76, 255, 0.08); color: var(--brand-2); }
+  .feature:nth-child(3) .icon { background: rgba(30, 200, 200, 0.10); color: #0ea5a5; }
+  .feature:nth-child(4) .icon { background: rgba(255, 138, 61, 0.10); color: #e0682b; }
+  .feature:nth-child(5) .icon { background: rgba(177, 76, 255, 0.08); color: #9333ea; }
+  .feature:nth-child(6) .icon { background: rgba(20, 184, 130, 0.10); color: #0f9b6a; }
+
+  .feature h4 { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+  .feature .en-label { font-size: 11px; color: var(--muted-2); margin-bottom: 10px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .feature p { margin: 0; font-size: 13.5px; line-height: 1.65; color: var(--muted); }
+
+  /* ---------- Contact ---------- */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 24px;
+  }
+  .contact-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 36px;
+    box-shadow: var(--shadow-sm);
+  }
+  .contact-card.dark {
+    background: linear-gradient(150deg, #0b1020 0%, #1a1d3a 70%, #2a1e4d 100%);
+    color: white;
+    border: none;
+    position: relative; overflow: hidden;
+  }
+  .contact-card.dark::before {
+    content: "";
+    position: absolute; top: -50%; right: -30%;
+    width: 80%; height: 100%;
+    background: radial-gradient(circle, rgba(106, 76, 255, 0.4), transparent 60%);
+    pointer-events: none;
+  }
+  .contact-card.dark > * { position: relative; }
+  .contact-card h3 {
+    margin: 0 0 8px; font-size: 22px; font-weight: 600;
+  }
+  .contact-card .lead {
+    font-size: 13.5px; line-height: 1.65;
+    color: var(--muted); margin: 0 0 28px;
+  }
+  .contact-card.dark .lead { color: rgba(255,255,255,0.65); }
+
+  .contact-list { display: flex; flex-direction: column; gap: 14px; }
+  .contact-row {
+    display: flex; align-items: center; gap: 16px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    transition: background 0.18s;
+  }
+  .contact-row:hover { background: rgba(255,255,255,0.08); }
+  .contact-row .ic {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: rgba(255,255,255,0.08);
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .contact-row .label {
+    font-size: 11px; color: rgba(255,255,255,0.55);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .contact-row .value {
+    font-size: 14px; font-weight: 500;
+    font-family: "JetBrains Mono", "Inter", monospace;
+  }
+  .contact-row .copy {
+    margin-left: auto;
+    background: rgba(255,255,255,0.08);
+    border: none; color: rgba(255,255,255,0.7);
+    width: 32px; height: 32px; border-radius: 8px;
+    cursor: pointer; display: grid; place-items: center;
+    transition: background 0.15s;
+    font-family: inherit;
+  }
+  .contact-row .copy:hover { background: rgba(255,255,255,0.15); color: white; }
+
+  .response-banner {
+    margin-top: 24px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: rgba(30, 200, 200, 0.12);
+    border: 1px solid rgba(30, 200, 200, 0.3);
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.85);
+  }
+
+  /* Form */
+  .form-grid { display: grid; gap: 14px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-size: 12px; color: var(--muted);
+    font-weight: 500; letter-spacing: 0.02em;
+  }
+  .field label .en { color: var(--muted-2); font-weight: 400; margin-left: 6px; }
+  .field input, .field select, .field textarea {
+    padding: 11px 14px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    font-size: 14px; font-family: inherit;
+    background: #fafbff;
+    color: var(--ink);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: var(--brand);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(59, 91, 253, 0.1);
+  }
+  .field textarea { min-height: 110px; resize: vertical; }
+  .form-submit {
+    margin-top: 6px;
+    width: 100%;
+    padding: 13px;
+    background: var(--accent-grad);
+    background-size: 200% 100%;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px; font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background-position 0.4s, transform 0.12s;
+  }
+  .form-submit:hover { background-position: 100% 0; transform: translateY(-1px); }
+
+  /* ---------- Developer info ---------- */
+  .dev-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 40px 44px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 36px;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .dev-badge {
+    width: 88px; height: 88px;
+    border-radius: 22px;
+    background: var(--accent-grad);
+    display: grid; place-items: center;
+    color: white;
+    box-shadow: 0 14px 36px -10px rgba(106, 76, 255, 0.5);
+  }
+  .dev-info h3 { margin: 0 0 4px; font-size: 20px; font-weight: 600; }
+  .dev-info .dev-en { color: var(--muted); font-size: 13px; margin: 0 0 14px; }
+  .dev-meta {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 10px 32px;
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+  .dev-meta .key { color: var(--muted-2); font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .dev-meta .val { font-weight: 500; margin-top: 2px; }
+  .dev-meta div { line-height: 1.4; }
+  .dev-cta {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 999px;
+    font-size: 12px;
+    background: rgba(20, 184, 130, 0.10);
+    color: #0f9b6a;
+    font-weight: 500;
+  }
+  .pill .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #0f9b6a;
+    box-shadow: 0 0 0 3px rgba(20, 184, 130, 0.2);
+  }
+
+  /* ---------- Legal ---------- */
+  .legal-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .legal-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px;
+    display: flex; align-items: center; gap: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .legal-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .legal-card .icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: rgba(59, 91, 253, 0.08);
+    color: var(--brand);
+    display: grid; place-items: center; flex-shrink: 0;
+  }
+  .legal-card:nth-child(2) .icon { background: rgba(106, 76, 255, 0.08); color: var(--brand-2); }
+  .legal-card .text-block { flex: 1; }
+  .legal-card h4 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+  .legal-card .en { font-size: 12px; color: var(--muted); margin: 0 0 8px; }
+  .legal-card p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .legal-card .arrow {
+    color: var(--muted-2);
+    transition: transform 0.2s, color 0.2s;
+  }
+  .legal-card:hover .arrow { transform: translateX(4px); color: var(--brand); }
+
+  /* ---------- Footer ---------- */
+  footer {
+    margin-top: 80px;
+    padding: 36px 0 48px;
+    border-top: 1px solid var(--line);
+  }
+  .footer-inner {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12.5px; color: var(--muted);
+    gap: 20px; flex-wrap: wrap;
+  }
+  .footer-links { display: flex; gap: 22px; }
+  .footer-links a:hover { color: var(--ink); }
+
+  /* ---------- EN/CN toggle ---------- */
+  html[data-lang="en"] .cn { display: none; }
+  html[data-lang="zh"] .en-only { display: none; }
+  html[data-lang="en"] .en-toggle-show { display: inline; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 32px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: white;
+    padding: 12px 20px; border-radius: 10px;
+    font-size: 13px; opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+    box-shadow: var(--shadow-lg);
+    z-index: 100;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- ============== NAV ============== -->
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html" style="color:inherit;text-decoration:none;">
+      <div class="brand-logo">
+        <!-- barcode mark -->
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <path d="M4 5v14M8 5v14M12 5v14M16 5v14M20 5v14"/>
+        </svg>
+      </div>
+      <div class="brand-name">
+        <span class="cn">苹智条形码</span><span class="en-only">PinZhi Barcode</span>
+        <small>Support Center · 技术支持</small>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html"><span class="cn">所有应用</span><span class="en-only">All Apps</span></a>
+      <a href="#features"><span class="cn">功能介绍</span><span class="en-only">Features</span></a>
+      <a href="#contact"><span class="cn">联系我们</span><span class="en-only">Contact</span></a>
+      <a href="#developer"><span class="cn">开发者</span><span class="en-only">Developer</span></a>
+      <a href="privacy.html"><span class="cn">隐私政策</span><span class="en-only">Privacy</span></a>
+      <div class="lang-toggle" role="tablist">
+        <button data-lang="zh" class="active">中</button>
+        <button data-lang="en">EN</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ============== HERO ============== -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow">
+        <span class="dot"></span>
+        <span class="cn">技术支持中心 · 在线服务中</span>
+        <span class="en-only">Support Center · Online</span>
+      </div>
+      <h1 class="hero-title">
+        <span class="cn">遇到问题，<br/><span class="grad">我们在这里。</span></span>
+        <span class="en-only">Need help?<br/><span class="grad">We've got you.</span></span>
+      </h1>
+      <p class="hero-sub-en">
+        <span class="cn">PinZhi Barcode — Your professional barcode &amp; QR toolkit.</span>
+        <span class="en-only">苹智条形码 — 你的专业条码 &amp; 二维码工具箱。</span>
+      </p>
+      <p class="hero-desc">
+        <span class="cn">苹智条形码是一款专业的条码与二维码工具，支持常用条形码生成、二维码生成、扫码识别、批量生成、历史记录管理，以及 PDF / Excel / 相册导出，适合商品标签、库存管理、办公制码等场景。如果你在使用过程中遇到任何问题，欢迎通过下方任一方式联系我们。</span>
+        <span class="en-only">PinZhi Barcode is a professional barcode and QR code toolkit. It supports common barcode generation, QR code creation, scanning &amp; recognition, batch generation, history management, and export to PDF / Excel / Photo Library — perfect for product labels, inventory management, and office workflows. Reach out anytime via the channels below.</span>
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#contact">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="m4 6 8 7 8-7"/></svg>
+          <span class="cn">联系技术支持</span><span class="en-only">Contact Support</span>
+        </a>
+        <a class="btn btn-secondary" href="#features">
+          <span class="cn">查看功能</span><span class="en-only">View Features</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="app-preview">
+      <div class="app-card">
+        <div class="app-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M4 5v14M7.5 5v14M11 5v14M14.5 5v14M18 5v14M20.5 5v14"/>
+          </svg>
+        </div>
+        <h3><span class="cn">苹智条形码</span><span class="en-only">PinZhi Barcode</span></h3>
+        <p class="ver">Version 2.4.1 · iOS 16+ / iPadOS 16+</p>
+        <div class="barcode-preview">
+          <div class="barcode-bars"></div>
+          <div class="barcode-num mono">6 901234 567892</div>
+        </div>
+      </div>
+      <div class="floating-chip chip-1">
+        <div class="chip-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+        </div>
+        <span class="cn">扫码识别</span><span class="en-only">Scan</span>
+      </div>
+      <div class="floating-chip chip-2">
+        <div class="chip-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM21 14v3M14 21h3M21 21v.01"/></svg>
+        </div>
+        <span class="cn">批量生成</span><span class="en-only">Batch</span>
+      </div>
+      <div class="floating-chip chip-3">
+        <div class="chip-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/></svg>
+        </div>
+        <span class="cn">导出 PDF</span><span class="en-only">Export</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FEATURES ============== -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-head">
+      <div class="title-block">
+        <div class="en"><span class="cn">FEATURES · 功能</span><span class="en-only">FEATURES</span></div>
+        <h2><span class="cn">应用功能介绍</span><span class="en-only">What the app does</span></h2>
+      </div>
+      <div class="meta">
+        <span class="cn">六大核心能力，覆盖从识别到导出的完整制码流程。</span>
+        <span class="en-only">Six core capabilities covering the full barcode workflow — from scanning to export.</span>
+      </div>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature">
+        <span class="num">01</span>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5v14M7 5v14M10 5v14M13 5v14M16 5v14M19 5v14"/></svg>
+        </div>
+        <h4><span class="cn">条形码生成</span><span class="en-only">Barcode Generation</span></h4>
+        <div class="en-label cn">Barcode Generation</div>
+        <p>
+          <span class="cn">支持 Code 128 / EAN-13 / UPC / Code 39 等常用一维条码，输入即得高清矢量图。</span>
+          <span class="en-only">Supports Code 128 / EAN-13 / UPC / Code 39 and more — vector output ready for print.</span>
+        </p>
+      </div>
+
+      <div class="feature">
+        <span class="num">02</span>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3M14 17h3v4M17 14h4M21 17v4M14 21h.01M21 21h.01"/></svg>
+        </div>
+        <h4><span class="cn">二维码生成</span><span class="en-only">QR Code Creation</span></h4>
+        <div class="en-label cn">QR Code Creation</div>
+        <p>
+          <span class="cn">支持文本、网址、Wi-Fi、名片、邮件等内容类型，可自定义颜色、嵌入 Logo。</span>
+          <span class="en-only">Text, URL, Wi-Fi, vCard, email — customize colors and embed your own logo.</span>
+        </p>
+      </div>
+
+      <div class="feature">
+        <span class="num">03</span>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>
+        </div>
+        <h4><span class="cn">扫码识别</span><span class="en-only">Scan &amp; Recognize</span></h4>
+        <div class="en-label cn">Scan &amp; Recognize</div>
+        <p>
+          <span class="cn">实时摄像头扫码，亦支持从相册图片中识别，可在弱光环境下保持稳定。</span>
+          <span class="en-only">Real-time camera scanning or recognize from photo library — stable even in low light.</span>
+        </p>
+      </div>
+
+      <div class="feature">
+        <span class="num">04</span>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <h4><span class="cn">批量生成</span><span class="en-only">Batch Generation</span></h4>
+        <div class="en-label cn">Batch Generation</div>
+        <p>
+          <span class="cn">导入 Excel 或 CSV 一次生成数十至数百条码，自动编号、自动排版。</span>
+          <span class="en-only">Import Excel/CSV to generate dozens or hundreds at once — auto-numbered and laid out.</span>
+        </p>
+      </div>
+
+      <div class="feature">
+        <span class="num">05</span>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        </div>
+        <h4><span class="cn">历史记录</span><span class="en-only">History</span></h4>
+        <div class="en-label cn">History</div>
+        <p>
+          <span class="cn">所有生成与扫描记录本地保存，支持标签、搜索、收藏与一键重新生成。</span>
+          <span class="en-only">Generation &amp; scan history stored locally — search, tag, favorite, and regenerate in one tap.</span>
+        </p>
+      </div>
+
+      <div class="feature">
+        <span class="num">06</span>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+        </div>
+        <h4><span class="cn">多格式导出</span><span class="en-only">Multi-format Export</span></h4>
+        <div class="en-label cn">Multi-format Export</div>
+        <p>
+          <span class="cn">一键导出为 PDF、Excel 或保存至相册，支持 AirDrop、邮件与打印工作流。</span>
+          <span class="en-only">Export to PDF, Excel, or Photos in one tap — works with AirDrop, Mail, and print workflows.</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== CONTACT ============== -->
+<section class="section" id="contact">
+  <div class="container">
+    <div class="section-head">
+      <div class="title-block">
+        <div class="en"><span class="cn">CONTACT · 联系</span><span class="en-only">CONTACT</span></div>
+        <h2><span class="cn">联系我们</span><span class="en-only">Get in touch</span></h2>
+      </div>
+      <div class="meta">
+        <span class="cn">优先使用邮箱反馈，复杂问题请附上 App 版本与设备型号。</span>
+        <span class="en-only">Email is the fastest. Please include your app version &amp; device model for technical issues.</span>
+      </div>
+    </div>
+
+    <div class="contact-grid">
+      <!-- Channels (dark) -->
+      <div class="contact-card dark">
+        <h3><span class="cn">服务渠道</span><span class="en-only">Channels</span></h3>
+        <p class="lead">
+          <span class="cn">我们的客服团队工作日 09:00 – 18:00（GMT+8）在线，邮件通常在 24 小时内回复。</span>
+          <span class="en-only">Our team is online Mon–Fri 09:00 – 18:00 GMT+8. Emails are typically answered within 24 hours.</span>
+        </p>
+
+        <div class="contact-list">
+          <div class="contact-row">
+            <div class="ic">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="m4 6 8 7 8-7"/></svg>
+            </div>
+            <div>
+              <div class="label"><span class="cn">客服邮箱 · Email</span><span class="en-only">Support Email</span></div>
+              <div class="value">springshaw666@gmail.com</div>
+            </div>
+            <button class="copy" data-copy="springshaw666@gmail.com" title="Copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </div>
+
+          <div class="contact-row">
+            <div class="ic">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div>
+              <div class="label"><span class="cn">微博 / Weibo</span><span class="en-only">Weibo</span></div>
+              <div class="value">@苹智条形码官方</div>
+            </div>
+            <button class="copy" data-copy="@苹智条形码官方" title="Copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="response-banner">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+          <span class="cn">平均响应时间 &lt; 24 小时 · 工作日内通常 4 小时内回复</span>
+          <span class="en-only">Average response &lt; 24h · Often within 4h on business days</span>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="contact-card">
+        <h3><span class="cn">提交问题</span><span class="en-only">Submit a request</span></h3>
+        <p class="lead">
+          <span class="cn">填写以下表单后我们会通过邮件回复你。所有信息仅用于本次问题处理。</span>
+          <span class="en-only">Fill in the form below and we'll reply by email. Information is used only to resolve your request.</span>
+        </p>
+
+        <form class="form-grid" onsubmit="event.preventDefault(); showToast(LANG==='zh' ? '✓ 已收到，我们会尽快回复' : '✓ Received — we\\'ll get back to you soon');">
+          <div class="form-row">
+            <div class="field">
+              <label><span class="cn">姓名</span><span class="en-only">Name</span><span class="en cn"> · Name</span></label>
+              <input type="text" placeholder="" required />
+            </div>
+            <div class="field">
+              <label><span class="cn">邮箱</span><span class="en-only">Email</span><span class="en cn"> · Email</span></label>
+              <input type="email" placeholder="you@example.com" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label><span class="cn">问题类型</span><span class="en-only">Category</span></label>
+              <select>
+                <option><span class="cn">使用问题</span>使用问题 · Usage</option>
+                <option>功能建议 · Feature</option>
+                <option>故障报告 · Bug</option>
+                <option>商务合作 · Business</option>
+                <option>其他 · Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label><span class="cn">App 版本</span><span class="en-only">App Version</span></label>
+              <input type="text" placeholder="v2.4.1" />
+            </div>
+          </div>
+          <div class="field">
+            <label><span class="cn">问题描述</span><span class="en-only">Describe your issue</span></label>
+            <textarea placeholder=""></textarea>
+          </div>
+          <button type="submit" class="form-submit">
+            <span class="cn">提交反馈 →</span><span class="en-only">Submit →</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== DEVELOPER ============== -->
+<section class="section" id="developer">
+  <div class="container">
+    <div class="section-head">
+      <div class="title-block">
+        <div class="en"><span class="cn">DEVELOPER · 开发者</span><span class="en-only">DEVELOPER</span></div>
+        <h2><span class="cn">开发者信息</span><span class="en-only">About the developer</span></h2>
+      </div>
+      <div class="meta">
+        <span class="cn">App Store 备案信息，符合开发者真实身份合规要求。</span>
+        <span class="en-only">Registered developer information — App Store compliant.</span>
+      </div>
+    </div>
+
+    <div class="dev-card">
+      <div class="dev-badge">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21v-2a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="dev-info">
+        <h3><span class="cn">可为工作室</span><span class="en-only">Kewei Studio</span></h3>
+        <p class="dev-en">
+          <span class="cn">Kewei Studio · Independent Apple Developer</span>
+          <span class="en-only">可为工作室 · 独立 Apple 开发者</span>
+        </p>
+        <div class="dev-meta">
+          <div>
+            <div class="key"><span class="cn">联系邮箱</span><span class="en-only">Email</span></div>
+            <div class="val">springshaw666@gmail.com</div>
+          </div>
+          <div>
+            <div class="key"><span class="cn">营业时间</span><span class="en-only">Hours</span></div>
+            <div class="val">Mon–Fri 09:00–18:00 (GMT+8)</div>
+          </div>
+        </div>
+      </div>
+      <div class="dev-cta">
+        <span class="pill">
+          <span class="dot"></span>
+          <span class="cn">认证开发者</span><span class="en-only">Verified</span>
+        </span>
+        <span class="pill" style="background:rgba(59,91,253,0.08); color:var(--brand);">
+          <span class="dot" style="background:var(--brand); box-shadow:0 0 0 3px rgba(59,91,253,0.2);"></span>
+          Apple Dev Program
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== LEGAL ============== -->
+<section class="section" id="legal">
+  <div class="container">
+    <div class="section-head">
+      <div class="title-block">
+        <div class="en"><span class="cn">LEGAL · 法律</span><span class="en-only">LEGAL</span></div>
+        <h2><span class="cn">隐私与条款</span><span class="en-only">Privacy &amp; Terms</span></h2>
+      </div>
+      <div class="meta">
+        <span class="cn">我们重视你的数据安全。所有条形码与扫描记录默认仅保存于本地设备。</span>
+        <span class="en-only">We take your data seriously. All barcodes &amp; scan history are stored locally by default.</span>
+      </div>
+    </div>
+
+    <div class="legal-grid">
+      <a class="legal-card" href="privacy.html">
+        </div>
+        <div class="text-block">
+          <h4><span class="cn">隐私政策</span><span class="en-only">Privacy Policy</span></h4>
+          <div class="en"><span class="cn">Privacy Policy</span><span class="en-only">隐私政策</span></div>
+          <p>
+            <span class="cn">了解我们如何收集、使用与保护你的个人数据，以及你的权利。</span>
+            <span class="en-only">How we collect, use, and protect your personal data — and your rights.</span>
+          </p>
+        </div>
+        <div class="arrow">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </div>
+      </a>
+
+      <a class="legal-card" href="terms.html"><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13h6M9 17h6"/></svg>
+        </div>
+        <div class="text-block">
+          <h4><span class="cn">使用条款</span><span class="en-only">Terms of Use</span></h4>
+          <div class="en"><span class="cn">Terms of Use</span><span class="en-only">使用条款</span></div>
+          <p>
+            <span class="cn">服务使用规范、许可范围以及双方的权利义务说明。</span>
+            <span class="en-only">Service usage rules, license scope, and the rights and obligations of both parties.</span>
+          </p>
+        </div>
+        <div class="arrow">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FOOTER ============== -->
+<footer>
+  <div class="container footer-inner">
+    <div>
+      © 2026 <span class="cn">可为工作室</span><span class="en-only">Kewei Studio</span>.
+      <span class="cn">保留所有权利。</span><span class="en-only">All rights reserved.</span>
+    </div>
+    <div class="footer-links">
+      <a href="index.html"><span class="cn">所有应用</span><span class="en-only">All Apps</span></a>
+      <a href="privacy.html"><span class="cn">隐私政策</span><span class="en-only">Privacy</span></a>
+      <a href="terms.html"><span class="cn">使用条款</span><span class="en-only">Terms</span></a>
+      <a href="support.html"><span class="cn">技术支持</span><span class="en-only">Support</span></a>
+      <a href="https://apps.apple.com" target="_blank">App Store</a>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // Language toggle
+  let LANG = 'zh';
+  document.documentElement.setAttribute('data-lang', LANG);
+  document.querySelectorAll('.lang-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      LANG = btn.dataset.lang;
+      document.documentElement.setAttribute('data-lang', LANG);
+      document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.toggle('active', b === btn));
+    });
+  });
+
+  // Copy buttons
+  document.querySelectorAll('.copy').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const text = btn.dataset.copy;
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast(LANG === 'zh' ? '✓ 已复制到剪贴板' : '✓ Copied to clipboard');
+      } catch {
+        showToast(text);
+      }
+    });
+  });
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(window.__toastTm);
+    window.__toastTm = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  // Smooth scroll for in-page links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id.length > 1) {
+        const el = document.querySelector(id);
+        if (el) {
+          e.preventDefault();
+          window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' });
+        }
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
