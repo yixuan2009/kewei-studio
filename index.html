@@ -708,15 +708,28 @@
 </footer>
 
 <script>
-  let LANG = 'zh';
+  // Shared language state — synced across all pages via localStorage
+  let LANG = (function(){
+    try { return localStorage.getItem('kewei-lang') || 'zh'; } catch(e) { return 'zh'; }
+  })();
   document.documentElement.setAttribute('data-lang', LANG);
+  document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.toggle('active', b.dataset.lang === LANG));
   document.querySelectorAll('.lang-toggle button').forEach(btn => {
     btn.addEventListener('click', e => {
       e.preventDefault();
       LANG = btn.dataset.lang;
       document.documentElement.setAttribute('data-lang', LANG);
+      try { localStorage.setItem('kewei-lang', LANG); } catch(e) {}
       document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.toggle('active', b === btn));
     });
+  });
+  // Listen for changes from other tabs/pages
+  window.addEventListener('storage', e => {
+    if (e.key === 'kewei-lang' && e.newValue && e.newValue !== LANG) {
+      LANG = e.newValue;
+      document.documentElement.setAttribute('data-lang', LANG);
+      document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.toggle('active', b.dataset.lang === LANG));
+    }
   });
 
   // “Coming soon” modal
